@@ -1,0 +1,16 @@
+﻿@model CustomerLinkViewModel
+@{
+    ViewData["Title"] = "Link";
+}
+
+<h2>Link Customer to Shops</h2>
+
+<select asp-for="customer_list">
+    <option value="value">text</option>
+</select>
+
+@foreach (var item in Model.shop_info_list)
+{
+    <p>@item.shop_name</p>
+    <input type="checkbox" value="@item.isPicked"/>
+}

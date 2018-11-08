@@ -1,0 +1,21 @@
+﻿@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mx-auto col-8">
+    <form asp-action="Login" asp-controller="Account" asp-anti-forgery="true">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <label for="username">user name</label>
+            <input type="text" class="form-control" id="username" placeholder="username" asp-for="user_name">
+            <small id="emailHelp" class="form-text text-muted">default: username=admin, password=admin</small>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password" asp-for="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+
