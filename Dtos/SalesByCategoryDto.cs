@@ -9,5 +9,6 @@ namespace demoBusinessReport.Dtos
     {
         public string Category_name { get; set; }
         public decimal Total_amount { get; set; }
+        public decimal Total_amount_compare { get; set; }
     }
 }

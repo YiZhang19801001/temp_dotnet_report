@@ -52,6 +52,7 @@ namespace demoBusinessReport
             services.AddScoped<IDataService<Audit>, ShopDataService<Audit>>();
             services.AddScoped<IDataService<Staff>, ShopDataService<Staff>>();
             services.AddScoped<IDataService<SalesOrder>, ShopDataService<SalesOrder>>();
+            services.AddScoped<IDataService<Payments>, ShopDataService<Payments>>();
 
 
             //add asp.net identity framework
@@ -129,7 +130,7 @@ namespace demoBusinessReport
             app.UseMvcWithDefaultRoute();
 
             //call seed method
-            SeedHelper.Seed(app.ApplicationServices).Wait();
+            //SeedHelper.Seed(app.ApplicationServices).Wait();
         }
     }
 }

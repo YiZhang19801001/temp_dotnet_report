@@ -7,7 +7,7 @@ namespace demoBusinessReport.Dtos
 {
     public class SalesByDayDto
     {
-        public DateTime Single_date { get; set; }
+        public string Single_date { get; set; }
         public decimal Sum_amount { get; set; }
     }
 }

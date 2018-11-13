@@ -18,6 +18,7 @@ namespace demoBusinessReport.Helpers
         public DbSet<Audit> Audit { get; set; }
         public DbSet<Staff> Staff { get; set; }
         public DbSet<SalesOrder> SalesOrder { get; set; }
+        public DbSet<Payments> Payments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder option)
         {

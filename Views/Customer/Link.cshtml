@@ -3,14 +3,28 @@
     ViewData["Title"] = "Link";
 }
 
-<h2>Link Customer to Shops</h2>
+<form asp-action="link" asp-controller="customer">
+    <h2>Link Customer to Shops</h2>
 
-<select asp-for="customer_list">
-    <option value="value">text</option>
-</select>
+    <select asp-for="customer_id" asp-items="@Model.customer_list">
+        <option>Select a customer</option>
+    </select>
 
-@foreach (var item in Model.shop_info_list)
-{
-    <p>@item.shop_name</p>
-    <input type="checkbox" value="@item.isPicked"/>
-}
+    <div class="container">
+        @for (int i = 0; i < Model.shop_info_list.Count(); i++)
+        {
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+
+                        <input asp-for="shop_info_list[i].isPicked">
+                    </div>
+                </div>
+            <input asp-for="shop_info_list[i].shop_id" readonly>
+            <input asp-for="shop_info_list[i].shop_name" readonly>
+            </div>
+        }
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+

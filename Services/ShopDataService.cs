@@ -19,10 +19,10 @@ namespace demoBusinessReport.Services
             _dbset = _context.Set<T>();
         }
 
-        public void Create(T entity)
+        public async Task Create(T entity)
         {
-            _dbset.AddAsync(entity);
-            _context.SaveChangesAsync();//commit
+            await _dbset.AddAsync(entity);
+            await _context.SaveChangesAsync();//commit
         }
 
         public void Delete(T entity)
@@ -41,9 +41,9 @@ namespace demoBusinessReport.Services
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
 
-        public IEnumerable<T> Query(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T>> Query(Expression<Func<T, bool>> predicate)
         {
-            return _context.Set<T>().Where(predicate);
+            return await _context.Set<T>().Where(predicate).ToListAsync();
         }
 
         public void Update(T entity)

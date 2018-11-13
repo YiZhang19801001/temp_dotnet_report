@@ -16,7 +16,7 @@ namespace demoBusinessReport.Services
 
         protected override void OnConfiguring(DbContextOptionsBuilder option)
         {
-            option.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB ; Database=demoLoginControl; Trusted_Connection=True");
+            option.UseSqlServer(@"Server=DESKTOP-D8NB7K1 ; Database=demoLogin;User Id=SA;Password=1689;");
         }
 
         //public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
