@@ -13,5 +13,6 @@ namespace demoBusinessReport.Entities
     public string custom { get; set; }
     public DateTime salesorder_date { get; set; }
     public decimal total_inc { get; set; }
-  }
+        public Int16 status { get; set; }
+    }
 }

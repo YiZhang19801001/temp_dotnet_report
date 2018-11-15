@@ -10,6 +10,7 @@ namespace demoBusinessReport.Entities
     {
         [Key]
         public int payment_id { get; set; }
+        public int docket_id { get; set; }
         public string paymenttype { get; set; }
         public decimal amount { get; set; }
         public DateTime docket_date { get; set; }

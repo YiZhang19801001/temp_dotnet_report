@@ -34,9 +34,12 @@ namespace demoBusinessReport.Controllers
             {
                 var result = await _signInManagerService.PasswordSignInAsync(vm.user_name, vm.password, false, false);
 
+
+
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Create", "Customer");
+                    
+                    return RedirectToAction("Create","Customer");
 
                 }
                 else
@@ -44,7 +47,26 @@ namespace demoBusinessReport.Controllers
                     ModelState.AddModelError("", "Username or password incorrect");
                 }
             }
-            return View(vm);
+            return RedirectToAction("Index","Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManagerService.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult LoginRoute()
+        {
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Create", "Customer");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

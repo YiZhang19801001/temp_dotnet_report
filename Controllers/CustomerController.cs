@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using demoBusinessReport.Services;
 using demoBusinessReport.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace demoBusinessReport.Controllers
 {
+    //[Authorize]
     public class CustomerController : Controller
     {
         #region - injection

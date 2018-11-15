@@ -106,42 +106,42 @@ namespace demoBusinessReport.Controllers
 
             dto.Summary_Items.Add(new SummaryItem
             {
-                Name = "total_Sales",
+                Name = "Total Sales",
                 Compare_Value = compare_detail.Total_Sales,
                 Value = select_detail.Total_Sales
             });
 
             dto.Summary_Items.Add(new SummaryItem
             {
-                Name = "Number_Of_Transactions",
+                Name = "Number Of Transactions",
                 Compare_Value = compare_detail.Number_Of_Transactions,
                 Value = select_detail.Number_Of_Transactions
             });
 
             dto.Summary_Items.Add(new SummaryItem
             {
-                Name = "Total_Refund",
+                Name = "Total Refund",
                 Compare_Value = compare_detail.Total_Refund,
                 Value = select_detail.Total_Refund
             });
 
             dto.Summary_Items.Add(new SummaryItem
             {
-                Name = "Total_Discount",
+                Name = "Total Discount",
                 Compare_Value = compare_detail.Total_Discount,
                 Value = select_detail.Total_Discount
             });
 
             dto.Summary_Items.Add(new SummaryItem
             {
-                Name = "Avg_Sales_Value",
+                Name = "Avg. Sales Value",
                 Compare_Value = compare_detail.Avg_Sales_Value,
                 Value = select_detail.Avg_Sales_Value
             });
 
             dto.Summary_Items.Add(new SummaryItem
             {
-                Name = "Avg_Item_Per_Sale",
+                Name = "Avg. Item Per Sale",
                 Compare_Value = compare_detail.Avg_Item_Per_Sale,
                 Value = select_detail.Avg_Item_Per_Sale
             });
@@ -238,7 +238,7 @@ namespace demoBusinessReport.Controllers
             {
                 dto.Avg_Sales_Value = Math.Round(dto.Total_Sales / dto.Number_Of_Transactions, 2);
             }
-            dto.Avg_Item_Per_Sale = Math.Round(sum_sales_by_quantity.Average(), 2);
+            dto.Avg_Item_Per_Sale =(sum_sales_by_quantity.Count()>0)?Math.Round(sum_sales_by_quantity.Average(), 2):0;
             dto.Hourly_Sales = arr_hour_sale;
             dto.PaymentSum = paymentDetails;
             //return dto
@@ -451,26 +451,23 @@ namespace demoBusinessReport.Controllers
 
         #region - get unpaid order
         [HttpPost("getunpaidorder")]
-        public async Task<IEnumerable<UnpaidOrderDto>> getUnpaidOrder([FromBody] SearchCondition scon)
+        public async Task<JsonResult> getUnpaidOrder([FromBody] SearchCondition scon)
         {
             List<UnpaidOrderDto> list = new List<UnpaidOrderDto>();
             //0. connect to DB
             await setConnectionString(scon.ShopId);
-            var _docketDataService = new ShopDataService<Docket>();
+
             var _salesOrderDataService = new ShopDataService<SalesOrder>();
+
             //1. fetch data from DB
-            IEnumerable<Docket> dockets = await _docketDataService.Query(d=>d.docket_date >= scon.DateFrom && d.docket_date<= scon.DateTo);
-            List<int> ids = dockets.Select(d => d.original_id).ToList();
-            IEnumerable<Docket> dockets_compared = await _docketDataService.Query(d => d.docket_date >= scon.Compare_DateFrom && d.docket_date <= scon.Compare_DateTo);
-            List<int> ids_compared = dockets_compared.Select(d => d.original_id).ToList();
 
             IEnumerable<SalesOrder> orders = await _salesOrderDataService
-              .Query(o=>!ids.Contains(o.salesorder_id));
-            IEnumerable<SalesOrder> orders_compared = await _salesOrderDataService
-              .Query(o => !ids_compared.Contains(o.salesorder_id));
+              .Query(o=>o.salesorder_date > scon.DateFrom && o.status<10);
 
             List<string> customs = orders.Select(o => o.custom).Distinct().ToList();
 
+            decimal sum = orders.Sum(o=>o.total_inc);
+            
 
             //2. create view model
             foreach (var custom in customs)
@@ -478,7 +475,6 @@ namespace demoBusinessReport.Controllers
                 UnpaidOrderDto dto = new UnpaidOrderDto();
                 dto.customer = custom;
                 dto.total_amount = 0;
-                dto.total_amount_compared = 0;
 
                 foreach (var order in orders)
                 {
@@ -488,19 +484,11 @@ namespace demoBusinessReport.Controllers
                     }
                 }
 
-                foreach (var order in orders_compared)
-                {
-                    if (order.custom == custom)
-                    {
-                        dto.total_amount_compared += order.total_inc;
-                    }
-                }
-
                 list.Add(dto);
             }
 
             //3. return view model
-            return list;
+            return Json(new {sum_total = sum,detail_list = list});
         }
 
         #endregion
