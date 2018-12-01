@@ -192,7 +192,10 @@ namespace demoBusinessReport.Controllers
             IEnumerable<int> returns_ids = returns.Select(r => r.returns_id).ToList();
             IEnumerable<ReturnsLine> returnslines = await _returnsLineDataService.Query(rl => returns_ids.Contains(rl.returns_id));
             IEnumerable<DocketLine> docketLines = await _docketLineDataService.Query(dl => docket_ids.Contains(dl.docket_id));
-            
+            IEnumerable<double> dl_stock_ids = docketLines.Select(dl => dl.stock_id).ToList();
+            IEnumerable<Stock> stocks = await _stockDataService.Query(s => dl_stock_ids.Contains(s.stock_id));
+
+            var join_stock_dl =stocks.GroupJoin(docketLines, s => s.stock_id, dl => dl.stock_id, (s, dl) => new { cat1 = s.cat1, dls=dl});
 
             #region - calculate Avg_Item_Per_Sale
             /** calculate Avg_Item_Per_Sale */
@@ -268,33 +271,43 @@ namespace demoBusinessReport.Controllers
                 Amount =0
             };
 
-            foreach (var dl in docketLines)
+            foreach (var item in join_stock_dl)
             {
-                string cat1 =_stockDataService.GetSingleEntity(s => s.stock_id == dl.stock_id).cat1;
-                if (cat1 != "TASTE" && cat1 != "EXTRA")
+                
+                if (item.cat1 != "TASTE" && item.cat1 != "EXTRA")
                 {
-                    if (dl.size_level == 1)
+                    foreach (var dl in item.dls)
                     {
-                        custom1.Quantity = custom1.Quantity + dl.quantity;
-                        custom1.Amount = Math.Round((custom1.Amount + (double)dl.sell_inc * dl.quantity)*100)/100;
-                    }
-                    else if (dl.size_level == 2)
-                    {
-                        custom2.Quantity = custom2.Quantity + dl.quantity;
-                        custom2.Amount = Math.Round((custom2.Amount + (double)dl.sell_inc * dl.quantity)*100)/100;
+                        if (dl.size_level == 1)
+                        {
+                            custom1.Quantity = custom1.Quantity + dl.quantity;
+                            custom1.Amount = Math.Round((custom1.Amount + (double)dl.sell_inc * dl.quantity) * 100) / 100;
+                        }
+                        else if (dl.size_level == 2)
+                        {
+                            custom2.Quantity = custom2.Quantity + dl.quantity;
+                            custom2.Amount = Math.Round((custom2.Amount + (double)dl.sell_inc * dl.quantity) * 100) / 100;
+
+                        }
+                        else
+                        {
+                            others.Quantity = others.Quantity + dl.quantity;
+                            others.Amount = Math.Round((others.Amount + (double)dl.sell_inc * dl.quantity) * 100) / 100;
+
+                        }
 
                     }
-                    else
-                    {
-                        others.Quantity = others.Quantity + dl.quantity;
-                        others.Amount = Math.Round((others.Amount + (double)dl.sell_inc * dl.quantity) *100)/100;
 
-                    }
                 }
                 else
                 {
-                    extra.Quantity = extra.Quantity + dl.quantity;
-                    extra.Amount = Math.Round((extra.Amount + (double)dl.sell_inc * dl.quantity)*100)/100;
+                    foreach (var dl in item.dls)
+                    {
+
+                        extra.Quantity = extra.Quantity + dl.quantity;
+                        extra.Amount = Math.Round((extra.Amount + (double)dl.sell_inc * dl.quantity)*100)/100;
+
+                    }
                 }
                 
             }
