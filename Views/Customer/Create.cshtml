@@ -1,7 +1,7 @@
 ﻿@model CustomerCreateViewModel
 
 <div class="container"><h2>Create Customer</h2></div>
-
+<h1>@User.Identity.Name</h1>
 <div class="container mx-auto col-8">
     <form asp-action="Create" asp-controller="Customer" asp-anti-forgery="true">
         <div asp-validation-summary="ModelOnly"></div>

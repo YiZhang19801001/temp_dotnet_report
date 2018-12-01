@@ -125,8 +125,6 @@ namespace demoBusinessReport
 
             app.UseAuthentication();
 
-            app.UseMvc();
-
             app.UseMvcWithDefaultRoute();
 
             //call seed method
