@@ -261,6 +261,13 @@ namespace demoBusinessReport.Controllers
                 Amount = 0
             };
 
+            CustomDataItem extra = new CustomDataItem
+            {
+                Name = "extra",
+                Quantity = 0,
+                Amount =0
+            };
+
             foreach (var dl in docketLines)
             {
                 Stock stock_row =await _stockDataService.GetSingle(s => s.stock_id == dl.stock_id);
@@ -284,12 +291,19 @@ namespace demoBusinessReport.Controllers
 
                     }
                 }
+                else
+                {
+                    extra.Quantity = extra.Quantity + dl.quantity;
+                    extra.Amount = extra.Amount + (double)dl.sell_inc * dl.quantity;
+                }
                 
             }
             List<CustomDataItem> customer_data_sum = new List<CustomDataItem>();
             customer_data_sum.Add(custom1);
             customer_data_sum.Add(custom2);
             customer_data_sum.Add(others);
+            customer_data_sum.Add(extra);
+
 
             #endregion
             dto.Total_Sales = (double)dockets.Sum(d => d.total_inc);
