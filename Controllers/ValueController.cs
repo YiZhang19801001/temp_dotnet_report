@@ -274,10 +274,14 @@ namespace demoBusinessReport.Controllers
                     else if (dl.size_level == 2)
                     {
                         custom2.Quantity = custom2.Quantity + dl.quantity;
+                        custom2.Amount = custom2.Amount + (double)dl.sell_inc * dl.quantity;
+
                     }
                     else
                     {
                         others.Quantity = others.Quantity + dl.quantity;
+                        others.Amount = others.Amount + (double)dl.sell_inc * dl.quantity;
+
                     }
                 }
                 
