@@ -14,5 +14,6 @@ namespace demoBusinessReport.Services
         Task<IEnumerable<T>> Query(Expression<Func<T, bool>> predicate);
         void Update(T entity);
         void Delete(T entity);
+        T GetSingleEntity(Expression<Func<T, bool>> predicate);
     }
 }

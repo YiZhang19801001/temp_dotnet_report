@@ -19,6 +19,11 @@ namespace demoBusinessReport.Services
             _dbset = _context.Set<T>();
         }
 
+        public T GetSingleEnity(Expression<Func<T, bool>> predicate)
+        {
+            return _context.Set<T>().FirstOrDefault(predicate);
+        }
+
         public async Task Create(T entity)
         {
             await _dbset.AddAsync(entity);

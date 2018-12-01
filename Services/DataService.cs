@@ -39,6 +39,11 @@ namespace demoBusinessReport.Services
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
 
+        public T GetSingleEntity(Expression<Func<T, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<T>> Query(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().Where(predicate).ToListAsync();

@@ -270,31 +270,31 @@ namespace demoBusinessReport.Controllers
 
             foreach (var dl in docketLines)
             {
-                Stock stock_row =await _stockDataService.GetSingle(s => s.stock_id == dl.stock_id);
-                if (stock_row.cat1 != "TASTE" && stock_row.cat1 != "EXTRA")
+                string cat1 =_stockDataService.GetSingleEnity(s => s.stock_id == dl.stock_id).cat1;
+                if (cat1 != "TASTE" && cat1 != "EXTRA")
                 {
                     if (dl.size_level == 1)
                     {
                         custom1.Quantity = custom1.Quantity + dl.quantity;
-                        custom1.Amount = custom1.Amount + (double)dl.sell_inc * dl.quantity;
+                        custom1.Amount = Math.Round((custom1.Amount + (double)dl.sell_inc * dl.quantity)*100)/100;
                     }
                     else if (dl.size_level == 2)
                     {
                         custom2.Quantity = custom2.Quantity + dl.quantity;
-                        custom2.Amount = custom2.Amount + (double)dl.sell_inc * dl.quantity;
+                        custom2.Amount = Math.Round((custom2.Amount + (double)dl.sell_inc * dl.quantity)*100)/100;
 
                     }
                     else
                     {
                         others.Quantity = others.Quantity + dl.quantity;
-                        others.Amount = others.Amount + (double)dl.sell_inc * dl.quantity;
+                        others.Amount = Math.Round((others.Amount + (double)dl.sell_inc * dl.quantity) *100)/100;
 
                     }
                 }
                 else
                 {
                     extra.Quantity = extra.Quantity + dl.quantity;
-                    extra.Amount = extra.Amount + (double)dl.sell_inc * dl.quantity;
+                    extra.Amount = Math.Round((extra.Amount + (double)dl.sell_inc * dl.quantity)*100)/100;
                 }
                 
             }

@@ -24,6 +24,7 @@ namespace demoBusinessReport
 
                //params string[] urls
                .UseUrls(urls: "http://192.168.1.88:5000")
+               //.UseUrls(urls: "http://192.168.20.101:5000")
 
                .Build();
 
