@@ -243,34 +243,42 @@ namespace demoBusinessReport.Controllers
             CustomDataItem custom1 = new CustomDataItem
             {
                 Name = custom1_db.custom1,
-                Quantity = 0
+                Quantity = 0,
+                Amount = 0
             };
 
             CustomDataItem custom2 = new CustomDataItem
             {
                 Name = custom2_db.custom2,
-                Quantity = 0
+                Quantity = 0,
+                Amount = 0
             };
 
             CustomDataItem others = new CustomDataItem
             {
                 Name = "others",
-                Quantity = 0
+                Quantity = 0,
+                Amount = 0
             };
 
             foreach (var dl in docketLines)
             {
-                if (dl.size_level == 1)
+                Stock stock_row =await _stockDataService.GetSingle(s => s.stock_id == dl.stock_id);
+                if (stock_row.cat1 != "TASTE" && stock_row.cat1 != "EXTRA")
                 {
-                    custom1.Quantity = custom1.Quantity + dl.quantity;
-                }
-                else if (dl.size_level == 2)
-                {
-                    custom2.Quantity = custom2.Quantity + dl.quantity;
-                }
-                else
-                {
-                    others.Quantity = others.Quantity + dl.quantity;
+                    if (dl.size_level == 1)
+                    {
+                        custom1.Quantity = custom1.Quantity + dl.quantity;
+                        custom1.Amount = custom1.Amount + (double)dl.sell_inc * dl.quantity;
+                    }
+                    else if (dl.size_level == 2)
+                    {
+                        custom2.Quantity = custom2.Quantity + dl.quantity;
+                    }
+                    else
+                    {
+                        others.Quantity = others.Quantity + dl.quantity;
+                    }
                 }
                 
             }

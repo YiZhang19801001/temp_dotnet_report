@@ -45,6 +45,7 @@ namespace demoBusinessReport.Dtos
     {
         public string Name { get; set; }
         public double Quantity { get; set; }
+        public double Amount { get; set; }
     }
 
     public class CustomDataGroup
