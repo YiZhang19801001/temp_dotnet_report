@@ -12,5 +12,7 @@ namespace demoBusinessReport.Entities
     public double stock_id { get; set; }
     public string cat1 { get; set; }
     public string description { get; set; }
-  }
+        public string custom1 { get; set; }
+        public string custom2 { get; set; }
+    }
 }

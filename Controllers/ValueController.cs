@@ -160,6 +160,13 @@ namespace demoBusinessReport.Controllers
                 Value = select_detail.PaymentSum
             };
 
+            dto.Custom_Data_Group = new CustomDataGroup
+            {
+                Name = "Custom Data Group",
+                Compare_Value = compare_detail.CustomDataSum,
+                Value = select_detail.CustomDataSum
+            };
+
             //return dto
             return Json(dto);
         }
@@ -173,6 +180,7 @@ namespace demoBusinessReport.Controllers
             var _returnsLineDataService = new ShopDataService<ReturnsLine>();
             var _docketLineDataService = new ShopDataService<DocketLine>();
             var _paymentDataService = new ShopDataService<Payments>();
+            var _stockDataService = new ShopDataService<Stock>();
 
             //1. create dto
             SummaryDetailDto dto = new SummaryDetailDto();
@@ -226,6 +234,52 @@ namespace demoBusinessReport.Controllers
                 arr_hour_sale[i - 1] = (double)dockets.Where(d => d.docket_date.Hour > i - 1 && d.docket_date.Hour <= i).Sum(d => d.total_inc);
             }
             #endregion
+
+            #region -custom data group
+            var custom1_db = await _stockDataService.GetSingle(s => s.custom1 != null);
+            var custom2_db = await _stockDataService.GetSingle(s => s.custom2 != null);
+
+
+            CustomDataItem custom1 = new CustomDataItem
+            {
+                Name = custom1_db.custom1,
+                Quantity = 0
+            };
+
+            CustomDataItem custom2 = new CustomDataItem
+            {
+                Name = custom2_db.custom2,
+                Quantity = 0
+            };
+
+            CustomDataItem others = new CustomDataItem
+            {
+                Name = "others",
+                Quantity = 0
+            };
+
+            foreach (var dl in docketLines)
+            {
+                if (dl.size_level == 1)
+                {
+                    custom1.Quantity = custom1.Quantity + dl.quantity;
+                }
+                else if (dl.size_level == 2)
+                {
+                    custom2.Quantity = custom2.Quantity + dl.quantity;
+                }
+                else
+                {
+                    others.Quantity = others.Quantity + dl.quantity;
+                }
+                
+            }
+            List<CustomDataItem> customer_data_sum = new List<CustomDataItem>();
+            customer_data_sum.Add(custom1);
+            customer_data_sum.Add(custom2);
+            customer_data_sum.Add(others);
+
+            #endregion
             dto.Total_Sales = (double)dockets.Sum(d => d.total_inc);
             dto.Number_Of_Transactions = dockets.Count();
             dto.Total_Refund = (double)returns.Sum(r => r.total_inc);
@@ -241,6 +295,7 @@ namespace demoBusinessReport.Controllers
             dto.Avg_Item_Per_Sale =(sum_sales_by_quantity.Count()>0)?Math.Round(sum_sales_by_quantity.Average(), 2):0;
             dto.Hourly_Sales = arr_hour_sale;
             dto.PaymentSum = paymentDetails;
+            dto.CustomDataSum = customer_data_sum;
             //return dto
             return dto;
         }

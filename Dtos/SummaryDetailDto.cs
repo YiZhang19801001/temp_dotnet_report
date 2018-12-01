@@ -17,5 +17,6 @@ namespace demoBusinessReport.Dtos
         public double[] Hourly_Sales { get; set; }
 
         public List<PaymentDetail> PaymentSum { get; set; }
+        public List<CustomDataItem> CustomDataSum { get; set; }
     }
 }

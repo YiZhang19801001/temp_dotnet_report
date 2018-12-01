@@ -11,6 +11,7 @@ namespace demoBusinessReport.Dtos
         public List<SummaryItem> Summary_Items { get; set; }
         public HourlySummary Hourly_Summary { get; set; }
         public PaymentSummary Payment_Summary { get; set; }
+        public CustomDataGroup Custom_Data_Group { get; set; }
     }
 
     public class SummaryItem
@@ -38,5 +39,18 @@ namespace demoBusinessReport.Dtos
         public string Name { get; set; }
         public List<PaymentDetail> Value { get; set; }
         public List<PaymentDetail> Compare_Value { get; set; }
+    }
+
+    public class CustomDataItem
+    {
+        public string Name { get; set; }
+        public double Quantity { get; set; }
+    }
+
+    public class CustomDataGroup
+    {
+        public string Name { get; set; }
+        public List<CustomDataItem> Value { get; set; }
+        public List<CustomDataItem> Compare_Value { get; set; }
     }
 }
