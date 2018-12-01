@@ -19,7 +19,7 @@ namespace demoBusinessReport.Services
             _dbset = _context.Set<T>();
         }
 
-        public T GetSingleEnity(Expression<Func<T, bool>> predicate)
+        public T GetSingleEntity(Expression<Func<T, bool>> predicate)
         {
             return _context.Set<T>().FirstOrDefault(predicate);
         }

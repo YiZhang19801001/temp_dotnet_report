@@ -270,7 +270,7 @@ namespace demoBusinessReport.Controllers
 
             foreach (var dl in docketLines)
             {
-                string cat1 =_stockDataService.GetSingleEnity(s => s.stock_id == dl.stock_id).cat1;
+                string cat1 =_stockDataService.GetSingleEntity(s => s.stock_id == dl.stock_id).cat1;
                 if (cat1 != "TASTE" && cat1 != "EXTRA")
                 {
                     if (dl.size_level == 1)
