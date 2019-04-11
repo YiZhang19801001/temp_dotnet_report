@@ -14,5 +14,7 @@ namespace demoBusinessReport.Entities
     public decimal total_inc { get; set; }
     public DateTime docket_date { get; set; }
     public int original_id { get; set; }
+    public string custom {get;set;} 
+    public string transaction {get;set;} 
   }
 }

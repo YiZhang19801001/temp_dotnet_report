@@ -186,7 +186,7 @@ namespace demoBusinessReport.Controllers
             SummaryDetailDto dto = new SummaryDetailDto();
 
             //2. fetch values from DB
-            IEnumerable<Docket> dockets = await _docketDataService.Query(d => d.docket_date >= DateFrom && d.docket_date <= DateTo);
+            IEnumerable<Docket> dockets = await _docketDataService.Query(d => (d.transaction == "SA" || d.transaction == "IV") && d.docket_date >= DateFrom && d.docket_date <= DateTo);
             IEnumerable<int> docket_ids = dockets.Select(d => d.docket_id).ToList();
             IEnumerable<Return> returns = await _returnDataService.Query(d => d.returns_date >= DateFrom && d.returns_date <= DateTo);
             IEnumerable<int> returns_ids = returns.Select(r => r.returns_id).ToList();
@@ -349,8 +349,8 @@ namespace demoBusinessReport.Controllers
             await setConnectionString(scon.ShopId);
             var _docketDataService = new ShopDataService<Docket>();
             //1. fetch data from DB
-            IEnumerable<Docket> dockets = await _docketDataService.Query(d => d.docket_date >= scon.DateFrom && d.docket_date <= scon.DateTo);
-            IEnumerable<Docket> dockets_compared = await _docketDataService.Query(d => d.docket_date >= scon.Compare_DateFrom&& d.docket_date <= scon.Compare_DateTo);
+            IEnumerable<Docket> dockets = await _docketDataService.Query(d => (d.transaction == "SA" || d.transaction == "IV") && d.docket_date >= scon.DateFrom && d.docket_date <= scon.DateTo);
+            IEnumerable<Docket> dockets_compared = await _docketDataService.Query(d => (d.transaction == "SA" || d.transaction == "IV") && d.docket_date >= scon.Compare_DateFrom&& d.docket_date <= scon.Compare_DateTo);
 
             List<string> dates = dockets.Select(d =>d.docket_date.ToShortDateString()).Distinct().ToList();
             List<string> dates_compared = dockets_compared.Select(d => d.docket_date.ToShortDateString()).Distinct().ToList();
@@ -371,15 +371,19 @@ namespace demoBusinessReport.Controllers
                 }
 
                 SalesByDayDto dto_compared = new SalesByDayDto();
-                dto_compared.Single_date = dates_compared[i];
-                dto_compared.Sum_amount = 0;
-                foreach (var dc in dockets_compared)
-                {
-                    if (dc.docket_date.ToShortDateString() == dates_compared[i])
-                    {
-                        dto_compared.Sum_amount += dc.total_inc;
-                    }
-                }
+				if(dates_compared.Count()>i)
+				{
+					dto_compared.Single_date = dates_compared[i];
+					dto_compared.Sum_amount = 0;
+					foreach (var dc in dockets_compared)
+					{
+						if (dc.docket_date.ToShortDateString() == dates_compared[i])
+						{
+							dto_compared.Sum_amount += dc.total_inc;
+						}
+					}					
+				}
+                
                 dto_res.Id = i;
                 dto_res.Value = dto;
                 dto_res.Value_Compared = dto_compared;
@@ -407,9 +411,9 @@ namespace demoBusinessReport.Controllers
             var _stockDataService = new ShopDataService<Stock>();
 
             //2. mapping value
-            IEnumerable<Docket> query_docket = await _docketDataService.Query(d => d.docket_date >= scon.DateFrom && d.docket_date <= scon.DateTo);
+            IEnumerable<Docket> query_docket = await _docketDataService.Query(d => (d.transaction == "SA" || d.transaction == "IV") && d.docket_date >= scon.DateFrom && d.docket_date <= scon.DateTo);
             List<int> docket_ids = query_docket.Select(p => p.docket_id).ToList();
-            IEnumerable<Docket> query_docket_compare = await _docketDataService.Query(d => d.docket_date >= scon.Compare_DateFrom && d.docket_date <= scon.Compare_DateTo);
+            IEnumerable<Docket> query_docket_compare = await _docketDataService.Query(d => (d.transaction == "SA" || d.transaction == "IV") && d.docket_date >= scon.Compare_DateFrom && d.docket_date <= scon.Compare_DateTo);
             List<int> docket_ids_compare = query_docket_compare.Select(p => p.docket_id).ToList();
 
             IEnumerable<DocketLine> docket_lines = await _docketLineDataService.Query(dl => docket_ids.Contains(dl.docket_id));
@@ -463,9 +467,9 @@ namespace demoBusinessReport.Controllers
             var _docketLineDataService = new ShopDataService<DocketLine>();
             var _stockDataService = new ShopDataService<Stock>();
             //1. fetch data from DB
-            IEnumerable<Docket> query_docket = await _docketDataService.Query(d => d.docket_date >= scon.DateFrom && d.docket_date <= scon.DateTo);
+            IEnumerable<Docket> query_docket = await _docketDataService.Query(d => (d.transaction == "SA" || d.transaction == "IV") && d.docket_date >= scon.DateFrom && d.docket_date <= scon.DateTo);
             List<int> ids = query_docket.Select(d => d.docket_id).ToList();
-            IEnumerable<Docket> query_docket_compare = await _docketDataService.Query(d => d.docket_date >= scon.Compare_DateFrom&& d.docket_date <= scon.Compare_DateTo);
+            IEnumerable<Docket> query_docket_compare = await _docketDataService.Query(d => (d.transaction == "SA" || d.transaction == "IV") && d.docket_date >= scon.Compare_DateFrom&& d.docket_date <= scon.Compare_DateTo);
             List<int> ids_compare = query_docket_compare.Select(d => d.docket_id).ToList();
             IEnumerable<DocketLine> dls = await _docketLineDataService.Query(dl => ids.Contains(dl.docket_id));
             IEnumerable<DocketLine> dls_compare = await _docketLineDataService.Query(dl => ids_compare.Contains(dl.docket_id));

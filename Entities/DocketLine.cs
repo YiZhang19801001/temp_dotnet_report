@@ -14,6 +14,6 @@ namespace demoBusinessReport.Entities
     public double stock_id { get; set; }
     public double quantity { get; set; }
     public decimal sell_inc { get; set; }
-    public Int16 size_level { get; set; }
+    public Int16? size_level { get; set; }
   }
 }
